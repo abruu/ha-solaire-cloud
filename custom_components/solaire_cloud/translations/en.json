@@ -1,0 +1,169 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Solaire Cloud",
+        "description": "Connect a public Solaire Cloud share link.",
+        "data": {
+          "share_link": "Share link",
+          "aes_key": "AES key",
+          "aes_iv": "AES IV"
+        },
+        "data_description": {
+          "share_link": "Paste the full public share link from Solaire Cloud (or just the code after shareCode=).",
+          "aes_key": "16 characters. The share page's AES key and IV are not included in this integration; see the README.",
+          "aes_iv": "16 characters. The share page's AES key and IV are not included in this integration; see the README."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Share link expired",
+        "description": "Solaire share links expire (usually yearly). Paste the new link.",
+        "data": {
+          "share_link": "Share link"
+        },
+        "data_description": {
+          "share_link": "Paste the full public share link from Solaire Cloud (or just the code after shareCode=)."
+        }
+      },
+      "reconfigure": {
+        "title": "Change Solaire Cloud settings",
+        "description": "Update the share link or the AES key and IV.",
+        "data": {
+          "share_link": "Share link",
+          "aes_key": "AES key",
+          "aes_iv": "AES IV"
+        },
+        "data_description": {
+          "share_link": "Paste the full public share link from Solaire Cloud (or just the code after shareCode=).",
+          "aes_key": "16 characters. The share page's AES key and IV are not included in this integration; see the README.",
+          "aes_iv": "16 characters. The share page's AES key and IV are not included in this integration; see the README."
+        }
+      }
+    },
+    "error": {
+      "invalid_link": "That does not look like a Solaire share link or code.",
+      "invalid_key": "The AES key and IV must be 16 characters each, and the response could not be decrypted with them.",
+      "invalid_auth": "Solaire rejected the request. The share link may be expired or wrong, or the AES key/IV is wrong.",
+      "cannot_connect": "Could not reach Solaire Cloud.",
+      "unknown": "Unexpected error. See the Home Assistant log."
+    },
+    "abort": {
+      "already_configured": "This share link is already set up.",
+      "reauth_successful": "The new share link works.",
+      "reconfigure_successful": "Settings updated."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Solaire Cloud options",
+        "data": {
+          "scan_interval": "Polling interval (seconds)"
+        },
+        "data_description": {
+          "scan_interval": "30 to 600 seconds. Keep it gentle: this is a public page, not an API."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "pv_power_w": {
+        "name": "PV power"
+      },
+      "yield_today_kwh": {
+        "name": "Energy today"
+      },
+      "yield_month_kwh": {
+        "name": "Energy this month"
+      },
+      "yield_year_kwh": {
+        "name": "Energy this year"
+      },
+      "yield_total_kwh": {
+        "name": "Energy total"
+      },
+      "load_today_kwh": {
+        "name": "Load energy today"
+      },
+      "grid_import_today_kwh": {
+        "name": "Grid import today"
+      },
+      "grid_export_today_kwh": {
+        "name": "Grid export today"
+      },
+      "self_use_today_pct": {
+        "name": "Self-use today"
+      },
+      "pv_peak_today_w": {
+        "name": "Peak power today"
+      },
+      "yield_yesterday_kwh": {
+        "name": "Energy yesterday"
+      },
+      "yield_7d_kwh": {
+        "name": "Energy last 7 days"
+      },
+      "best_day_kwh": {
+        "name": "Best day this month"
+      },
+      "avg_day_kwh": {
+        "name": "Average day this month"
+      },
+      "month_projection_kwh": {
+        "name": "Month projection"
+      },
+      "clear_energy_kwh": {
+        "name": "Clear-sky energy today"
+      },
+      "lost_kwh_est": {
+        "name": "Energy lost to stops today (estimate)"
+      },
+      "energy_morning_kwh": {
+        "name": "Energy before 10:00"
+      },
+      "energy_midday_kwh": {
+        "name": "Energy 10:00-14:00"
+      },
+      "energy_afternoon_kwh": {
+        "name": "Energy after 14:00"
+      },
+      "load_month_kwh": {
+        "name": "Load energy this month"
+      },
+      "grid_import_month_kwh": {
+        "name": "Grid import this month"
+      },
+      "grid_export_month_kwh": {
+        "name": "Grid export this month"
+      },
+      "self_sufficiency_month_pct": {
+        "name": "Self-sufficiency this month"
+      },
+      "production_hours": {
+        "name": "Production hours today"
+      },
+      "equivalent_hours": {
+        "name": "Equivalent full-sun hours"
+      },
+      "stopped_minutes": {
+        "name": "Stopped time today"
+      },
+      "stop_count": {
+        "name": "Inverter stops today"
+      },
+      "first_light_time": {
+        "name": "First light"
+      },
+      "last_light_time": {
+        "name": "Last light"
+      },
+      "pv_peak_time": {
+        "name": "Peak time"
+      },
+      "installed_kwp": {
+        "name": "Installed capacity"
+      }
+    }
+  }
+}

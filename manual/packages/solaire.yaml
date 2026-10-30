@@ -1,0 +1,136 @@
+# Solaire Cloud (public share link) -> Home Assistant sensors.
+# One poll every 60 s via scripts/solaire_fetch.py (the script backs off by itself after failures). The share code and
+# the AES key/IV live in secrets.yaml (see secrets.example.yaml), never in the command line.
+# The share endpoint only exposes PV-side data: no battery, no live load, no live grid power.
+
+command_line:
+  - sensor:
+      name: Solaire Cloud Data
+      unique_id: solaire_cloud_data
+      # --soft: failures print {"ok": false} and exit 0, because HA logs the whole command line on a non-zero exit.
+      command: python3 /config/scripts/solaire_fetch.py --soft
+      scan_interval: 60
+      command_timeout: 25
+      availability: "{{ value_json is mapping and value_json.ok == true }}"
+      device_class: timestamp
+      value_template: "{{ value_json.fetched_at }}"
+      json_attributes:
+        - pv_power_w
+        - pv_curve_last_w
+        - pv_curve_last_time
+        - pv_peak_today_w
+        - yield_today_kwh
+        - yield_month_kwh
+        - yield_year_kwh
+        - yield_total_kwh
+        - load_today_kwh
+        - grid_import_today_kwh
+        - grid_export_today_kwh
+        - self_use_today_pct
+        - equivalent_hours
+        - installed_kwp
+        - pv_peak_time
+        - first_light_time
+        - last_light_time
+        - production_hours
+        - energy_morning_kwh
+        - energy_midday_kwh
+        - energy_afternoon_kwh
+        - curve_energy_kwh
+        - power_curve_w
+        - yield_yesterday_kwh
+        - yield_7d_kwh
+        - best_day_kwh
+        - best_day_date
+        - avg_day_kwh
+        - days_producing
+        - month_projection_kwh
+        - load_month_kwh
+        - grid_import_month_kwh
+        - grid_export_month_kwh
+        - self_sufficiency_month_pct
+        - clear_curve_w
+        - clear_energy_kwh
+        - stopped_minutes
+        - stop_count
+        - lost_kwh_est
+
+template:
+  - sensor:
+      # ---- power (W) ----
+      - name: Solaire PV Power
+        unique_id: solaire_pv_power
+        unit_of_measurement: W
+        device_class: power
+        state_class: measurement
+        state: "{{ state_attr('sensor.solaire_cloud_data', 'pv_power_w') | float }}"
+        availability: "{{ states('sensor.solaire_cloud_data') not in ['unknown', 'unavailable'] and state_attr('sensor.solaire_cloud_data', 'pv_power_w') is number }}"
+        attributes:
+          last_curve_time: "{{ state_attr('sensor.solaire_cloud_data', 'pv_curve_last_time') }}"
+          peak_today_w: "{{ state_attr('sensor.solaire_cloud_data', 'pv_peak_today_w') }}"
+
+      # ---- PV energy (kWh) ----
+      - name: Solaire PV Energy Total
+        unique_id: solaire_pv_energy_total
+        unit_of_measurement: kWh
+        device_class: energy
+        state_class: total_increasing
+        state: "{{ state_attr('sensor.solaire_cloud_data', 'yield_total_kwh') | float }}"
+        availability: "{{ states('sensor.solaire_cloud_data') not in ['unknown', 'unavailable'] and state_attr('sensor.solaire_cloud_data', 'yield_total_kwh') is number }}"
+
+      - name: Solaire PV Energy Today
+        unique_id: solaire_pv_energy_today
+        unit_of_measurement: kWh
+        device_class: energy
+        state_class: total_increasing
+        state: "{{ state_attr('sensor.solaire_cloud_data', 'yield_today_kwh') | float }}"
+        availability: "{{ states('sensor.solaire_cloud_data') not in ['unknown', 'unavailable'] and state_attr('sensor.solaire_cloud_data', 'yield_today_kwh') is number }}"
+
+      - name: Solaire PV Energy Month
+        unique_id: solaire_pv_energy_month
+        unit_of_measurement: kWh
+        device_class: energy
+        state_class: total_increasing
+        state: "{{ state_attr('sensor.solaire_cloud_data', 'yield_month_kwh') | float }}"
+        availability: "{{ states('sensor.solaire_cloud_data') not in ['unknown', 'unavailable'] and state_attr('sensor.solaire_cloud_data', 'yield_month_kwh') is number }}"
+
+      - name: Solaire PV Energy Year
+        unique_id: solaire_pv_energy_year
+        unit_of_measurement: kWh
+        device_class: energy
+        state_class: total_increasing
+        state: "{{ state_attr('sensor.solaire_cloud_data', 'yield_year_kwh') | float }}"
+        availability: "{{ states('sensor.solaire_cloud_data') not in ['unknown', 'unavailable'] and state_attr('sensor.solaire_cloud_data', 'yield_year_kwh') is number }}"
+
+      # ---- load / grid daily energy (kWh, reset daily; null today => unavailable) ----
+      - name: Solaire Load Energy Today
+        unique_id: solaire_load_energy_today
+        unit_of_measurement: kWh
+        device_class: energy
+        state_class: total_increasing
+        state: "{{ state_attr('sensor.solaire_cloud_data', 'load_today_kwh') | float }}"
+        availability: "{{ states('sensor.solaire_cloud_data') not in ['unknown', 'unavailable'] and state_attr('sensor.solaire_cloud_data', 'load_today_kwh') is number }}"
+
+      - name: Solaire Grid Import Today
+        unique_id: solaire_grid_import_today
+        unit_of_measurement: kWh
+        device_class: energy
+        state_class: total_increasing
+        state: "{{ state_attr('sensor.solaire_cloud_data', 'grid_import_today_kwh') | float }}"
+        availability: "{{ states('sensor.solaire_cloud_data') not in ['unknown', 'unavailable'] and state_attr('sensor.solaire_cloud_data', 'grid_import_today_kwh') is number }}"
+
+      - name: Solaire Grid Export Today
+        unique_id: solaire_grid_export_today
+        unit_of_measurement: kWh
+        device_class: energy
+        state_class: total_increasing
+        state: "{{ state_attr('sensor.solaire_cloud_data', 'grid_export_today_kwh') | float }}"
+        availability: "{{ states('sensor.solaire_cloud_data') not in ['unknown', 'unavailable'] and state_attr('sensor.solaire_cloud_data', 'grid_export_today_kwh') is number }}"
+
+      # ---- ratios ----
+      - name: Solaire Self Use Today
+        unique_id: solaire_self_use_today
+        unit_of_measurement: "%"
+        state_class: measurement
+        state: "{{ state_attr('sensor.solaire_cloud_data', 'self_use_today_pct') | float }}"
+        availability: "{{ states('sensor.solaire_cloud_data') not in ['unknown', 'unavailable'] and state_attr('sensor.solaire_cloud_data', 'self_use_today_pct') is number }}"
