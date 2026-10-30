@@ -1,6 +1,7 @@
 {
   "domain": "solaire_cloud",
   "name": "Solaire Cloud",
+  "categories": ["energy.solar_batteries"],
   "codeowners": ["@abruu"],
   "config_flow": true,
   "documentation": "https://github.com/abruu/ha-solaire-cloud",
