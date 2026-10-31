@@ -18,6 +18,15 @@ this, so the integration talks to the same endpoint the share page uses and can 
 3. Paste your share link, the AES key and the AES IV.
 4. In **Settings, Dashboards, Energy**, choose **Solaire Cloud Energy total** as the solar production source.
 
+### Getting your share link
+
+In the Solaire Cloud web portal, click **Data Dashboard** (top right), switch **Enable** on, and press **Copy**.
+The link is valid for one year; re-enabling it creates a new link and the old one stops working.
+
+![Data Dashboard button](https://raw.githubusercontent.com/abruu/ha-solaire-cloud/main/docs/images/share-link-1-data-dashboard-button.png)
+
+![Dashboard settings with the Copy button](https://raw.githubusercontent.com/abruu/ha-solaire-cloud/main/docs/images/share-link-2-dashboard-settings.png)
+
 ### Getting the AES key and IV
 
 The share page encrypts its requests with AES-128-CBC, using a key and IV that are hard-coded in its own JavaScript:
